@@ -57,7 +57,11 @@ IsResultOK()
 CancelSpam()
 {
 	isCancelled := True
-	GetKeyState, state, Shift
+	CleanupShiftKey()
+}
+
+CleanupShiftKey()
+{
 	If GetKeyState("Shift")
 	{
 		Send, {Shift Up}
@@ -86,6 +90,7 @@ F1::
 		}
 		If IsResultOK()
 		{
+			CleanupShiftKey()
 			SoundPlay, *48
 			MsgBox, , Spam finished. Resulting item:, %Clipboard%
 			Break
