@@ -1,19 +1,47 @@
 #Include <ActiveScript>
 #IfWinActive, ahk_class POEWindowClass
 
-global isCancelled := 1
+isCancelled := True
 
-SleepRandomDelay()
+#Persistent
+OnWinActiveChange(hWinEventHook, vEvent, hWnd)
 {
-	Random r, 438, 997
+	;EVENT_SYSTEM_FOREGROUND := 0x3
+	static _ := DllCall("user32\SetWinEventHook", UInt,0x3, UInt,0x3, Ptr,0, Ptr,RegisterCallback("OnWinActiveChange"), UInt,0, UInt,0, UInt,0, Ptr)
+	DetectHiddenWindows, On
+	CancelSpam()
+}
+
+SleepDefault()
+{
+	Sleep, 50
+}
+
+SleepRandom()
+{
+	Random r, 113, 211
 	Sleep, %r%
 }
 
 CopyToClipboard()
 {
-	clipboard := ""
+	If isCancelled = True
+	{
+		return False
+	}
+	Clipboard := ""
+	SleepDefault()
+	If isCancelled = True
+	{
+		return False
+	}
 	Send ^{SC02E}
-	ClipWait
+	ClipWait, 2
+	If ErrorLevel
+	{
+	    Return False
+	}
+	Return True
 }
 
 IsResultOK()
@@ -21,44 +49,60 @@ IsResultOK()
 	script := new ActiveScript("JScript")
 	filepath = %A_ScriptDir%\js\middleman.js
 	FileRead, code, %filepath%
-	script["poeStringClip"] := clipboard
+	script["poeStringClip"] := Clipboard
 	script.Exec(code)
 	Return script.Eval("shouldStop") = "true"
 }
 
+CancelSpam()
+{
+	isCancelled := True
+	GetKeyState, state, Shift
+	If GetKeyState("Shift")
+	{
+		Send, {Shift Up}
+	}
+}
+
 F1::
 {
-	%isCancelled% := 0
-	Send, {SC02A Down}
+	isCancelled := False
+	Send, {Shift Down}
 	Loop
 	{
-		If not WinActive(ahk_class POEWindowClass) 
-		{
-			%isCancelled% :=  1
-		}
-		If %isCancelled% = 1 
+		If isCancelled = True
 		{
 			Break
 		}
 		Click
-		Sleep, 50
-		CopyToClipboard()
-		If IsResultOK() = True
+		SleepDefault()
+		If isCancelled = True
 		{
-			%isCancelled% :=  1
+			Break
+		}
+		If not CopyToClipboard()
+		{
+			Break
+		}
+		If IsResultOK()
+		{
+			SoundPlay, *48
+			MsgBox, , Spam finished. Resulting item:, %Clipboard%
+			Break
 		} 
 		Else
 		{
-			SleepRandomDelay()
+			If isCancelled = True
+			{
+				Break
+			}
+			SleepRandom()
 		}
 	}
-	Send, {SC02A Up}
 }
 
 F2::
 +F2::
 {
-	%isCancelled% :=  1
+	CancelSpam()
 }
-
-;https://autohotkey.com/board/topic/66726-method-to-detect-active-window-change/
