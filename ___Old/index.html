@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Hello World!</title>
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+</head>
+<body style="background: white;">
+  <form action="">
+          <p><span>Base Item</span> <label for="background"></label> <span>
+              <input type="text" name="base_item_search"></span>
+          </p>
+          <button id="search_button">Search</button>
+      </form>
+</body>
+</html>
+
+<script type=”text/javascript”>
+const btnclick = document.getElementById('search_button');
+btnclick.addEventListener('click', function () {
+  const { ipcRenderer } = require('electron')
+  ipcRenderer.send('search', 'ping')
+});
+</script>
