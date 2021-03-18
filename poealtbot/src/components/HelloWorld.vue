@@ -33,7 +33,7 @@
           <a
             v-for="(next, i) in whatsNext"
             :key="i"
-            :href="next.href"
+            @click="click()"
             class="subheading mx-3"
             target="_blank"
           >
@@ -83,9 +83,34 @@
 
 <script lang="ts">
 import Vue from "vue";
+import { 
+  baseItem,
+   itemInfluenceTagData,
+    influenceTags,
+    rollableAffixes } from "../parser/affix_finder";
+import { BaseItem } from "../model/BaseItem";
+import { Influence } from "../model/Influence";
 
 export default Vue.extend({
   name: "HelloWorld",
+
+  methods: {
+    click: () => {
+      const result = baseItem('Vaal Regalia')
+      console.log(result)
+      if (result != undefined) {
+        const infTagData = itemInfluenceTagData(result)
+        console.log(infTagData)
+        if (infTagData != undefined) {
+          const influences: Influence[] = [Influence.Crusader, Influence.Redeemer]
+          const infTags = influenceTags(influences, infTagData)
+          console.log(infTags)
+          const affixes = rollableAffixes(result.domain, result.tags.concat(infTags))
+          console.log(affixes)
+        }
+      }
+    }
+  },
 
   data: () => ({
     ecosystem: [
