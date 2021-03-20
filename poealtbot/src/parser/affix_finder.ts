@@ -9,7 +9,7 @@ import ModsJson from '../assets/data/mods.min.json'
 export function rollableAffixes(domain: Domain, tags: string[]): Affix[] {
     const filtered = Object.fromEntries(Object.entries(ModsJson).filter(([k,v]) => {
         const genType: GenerationType = v['generation_type']
-        const isPrefixOrSuffix = genType == GenerationType.Prefix || GenerationType.Prefix
+        const isPrefixOrSuffix = genType == GenerationType.Prefix || genType == GenerationType.Suffix
         if (v['domain'] != domain || !isPrefixOrSuffix ) {
             return false
         }
@@ -27,6 +27,8 @@ export function rollableAffixes(domain: Domain, tags: string[]): Affix[] {
         return affix
     })
 }
+
+// export function rollableAffixesAccountingForAddsTagExistingMods() {}
 
 export function baseItem(baseName: string): BaseItem | undefined {
     const json: { [key: string]: any } = BaseItemsJson
