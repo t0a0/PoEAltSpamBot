@@ -1,5 +1,5 @@
-export interface AffixTranslation {
-    english: English[];
+export interface StatTranslation {
+    English: English[];
     ids:     string[];
     hidden?: boolean;
 }
@@ -7,7 +7,7 @@ export interface AffixTranslation {
 export interface English {
     condition:     Condition[];
     format:        Format[];
-    indexHandlers: Array<IndexHandler[]>;
+    index_handlers: Array<IndexHandler[]>;
     string:        string;
 }
 
@@ -18,8 +18,8 @@ export interface Condition {
 }
 
 export enum Format {
-    Empty = "#",
-    Format = "+#",
+    Insert = "#",
+    InsertPlus = "+#",
     Ignore = "ignore",
 }
 
