@@ -17,6 +17,6 @@ module.exports = {
     "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
     "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
     "no-use-before-define": ["off", { "functions": true, "classes": true }],
-    "camelcase": ["error", { properties: "never" }]
+    "camelcase": ["off"]
   }
 };

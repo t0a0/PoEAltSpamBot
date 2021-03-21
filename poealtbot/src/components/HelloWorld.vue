@@ -54,45 +54,64 @@ import {
 // import { BaseItem } from "../model/BaseItem";
 import { Influence } from "@/model/Influence";
 import { affixTranslation } from "@/parser/affix_translator";
+import robotjs from "robotjs"
+import {clipboard} from "electron"
+
+
 export default Vue.extend({
   name: "HelloWorld",
 
   methods: {
     click: function (event: KeyboardEvent) {
-      const result = baseItem(this.input);
-      console.log(result);
-      if (result !== undefined) {
-        const infTagData = itemInfluenceTagData(result);
-        console.log(infTagData);
-        if (infTagData !== undefined) {
-          const influences: Influence[] = [
-            Influence.Crusader,
-            Influence.Redeemer,
-          ];
-          const infTags = influenceTags(influences, infTagData);
-          console.log(infTags);
-          const affixes = rollableAffixes(
-            result.domain,
-            result.tags.concat(infTags)
-          );
-          const translations = affixes.map(affixTranslation);
-          const prefs: string[] = [];
-          const suffs: string[] = [];
-          affixes.forEach((v, i, a) => {
-            if (v.generation_type == "prefix") {
-              prefs.push(translations[i]);
-            } else {
-              suffs.push(translations[i]);
-            }
-          });
-          this.prefixes = prefs;
-          this.suffixes = suffs;
-          console.log(this.prefixes);
-          return;
-        }
+      robotjs.setMouseDelay(200)
+      robotjs.moveMouse(115, 267)
+      robotjs.mouseClick("right", false)
+      robotjs.moveMouse(336, 438)
+      robotjs.keyToggle("shift", "down")
+      let done = false
+      while (!done) {
+        robotjs.setMouseDelay(Math.floor(Math.random() * 100) + 200)
+
+        robotjs.mouseClick("left", false)
+        robotjs.keyTap("C", ["control"])
+        done = clipboard.readText().toLowerCase().includes(this.input.toLowerCase())
       }
-      this.prefixes = [""];
-      this.suffixes = [""];
+            robotjs.keyToggle("shift", "up")
+
+    //   const result = baseItem(this.input);
+    //   console.log(result);
+    //   if (result !== undefined) {
+    //     const infTagData = itemInfluenceTagData(result);
+    //     console.log(infTagData);
+    //     if (infTagData !== undefined) {
+    //       const influences: Influence[] = [
+    //         Influence.Crusader,
+    //         Influence.Redeemer,
+    //       ];
+    //       const infTags = influenceTags(influences, infTagData);
+    //       console.log(infTags);
+    //       const affixes = rollableAffixes(
+    //         result.domain,
+    //         result.tags.concat(infTags)
+    //       );
+    //       const translations = affixes.map(affixTranslation);
+    //       const prefs: string[] = [];
+    //       const suffs: string[] = [];
+    //       affixes.forEach((v, i, a) => {
+    //         if (v.generation_type == "prefix") {
+    //           prefs.push(translations[i]);
+    //         } else {
+    //           suffs.push(translations[i]);
+    //         }
+    //       });
+    //       this.prefixes = prefs;
+    //       this.suffixes = suffs;
+    //       console.log(this.prefixes);
+    //       return;
+    //     }
+    //   }
+    //   this.prefixes = [""];
+    //   this.suffixes = [""];
     },
   },
 
